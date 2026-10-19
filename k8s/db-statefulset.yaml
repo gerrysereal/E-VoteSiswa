@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: evote-db
+  namespace: database
+spec:
+  serviceName: "evote-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evote-db
+  template:
+    metadata:
+      labels:
+        app: evote-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "Kubernete$2027"
+        - name: MYSQL_DATABASE
+          value: "db_pilketos"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evote-db
+  namespace: database
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: evote-db
+  clusterIP: None
