@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy all project files into the Apache document root
 COPY . /var/www/html/
 
-# Set permissions for CodeIgniter
+# Set proper permissions for CodeIgniter cache and logs
 RUN chown -R www-data:www-data /var/www/html/application/cache && \
     chown -R www-data:www-data /var/www/html/application/logs && \
     chmod -R 755 /var/www/html/application/cache && \
@@ -25,22 +25,18 @@ RUN chown -R www-data:www-data /var/www/html/application/cache && \
     chmod -R 755 /var/www/html/application/third_party/fpdf && \
     chown -R www-data:www-data /var/www/html/application/third_party/fpdf
 
-# Create uploads directory for mass DPT import
+# Create uploads and session directories
 RUN mkdir -p /var/www/html/uploads && \
     chown -R www-data:www-data /var/www/html/uploads && \
-    chmod -R 755 /var/www/html/uploads
+    chmod -R 755 /var/www/html/uploads && \
+    mkdir -p /tmp/sessions && \
+    chown -R www-data:www-data /tmp/sessions && \
+    chmod 755 /tmp/sessions
 
-# Create session directory (outside of bind mount)
-RUN mkdir -p /tmp/sessions && chown -R www-data:www-data /tmp/sessions && chmod 755 /tmp/sessions
-
-# Configure Apache to allow .htaccess (for CodeIgniter URL rewriting if used)
+# Configure Apache to allow .htaccess overrides
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
-
-# Fix writable permissions at runtime (bind mount overrides build-time chown)
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expose port 80
 EXPOSE 80
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["apache2-foreground"]
