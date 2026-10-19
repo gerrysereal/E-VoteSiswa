@@ -40,19 +40,18 @@ if ( ! function_exists('securityheaders_is_https')) {
 }
 
 if ( ! function_exists('securityheaders_policy')) {
-	function securityheaders_policy() {
-		return "default-src 'self'; "
-			. "script-src 'self' 'nonce-" . securityheaders_nonce() . "' https://cdn.jsdelivr.net; "
-			. "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-			. "font-src 'self' https://fonts.gstatic.com; "
-			. "img-src 'self' data:; "
-			. "connect-src 'self'; "
-			. "object-src 'none'; "
-			. "base-uri 'self'; "
-			. "form-action 'self'; "
-			. "frame-ancestors 'none'; "
-			. "upgrade-insecure-requests";
-	}
+        function securityheaders_policy() {
+                return "default-src 'self'; "
+                        . "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'nonce-" . securityheaders_nonce() . "' https://cdn.jsdelivr.net; "
+                        . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+                        . "font-src 'self' https://fonts.gstatic.com; "
+                        . "img-src 'self' data:; "
+                        . "connect-src 'self'; "
+                        . "object-src 'none'; "
+                        . "base-uri 'self'; "
+                        . "form-action 'self'; "
+                        . "frame-ancestors 'none';";
+        }
 }
 
 if ( ! function_exists('securityheaders_nonce')) {
