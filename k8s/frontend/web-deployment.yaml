@@ -18,7 +18,11 @@ spec:
         image: pulsanolimit/evote-web:latest
         ports:
         - containerPort: 80
-        env:
+			env:
+        - name: APP_BASE_URL
+          value: "http://23.80.82.143:30080/"
+        - name: APP_TIMEZONE
+          value: "Asia/Jakarta"
         - name: DB_HOST
           value: "evote-db.database.svc.cluster.local"
         - name: DB_NAME
